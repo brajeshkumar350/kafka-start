@@ -1,4 +1,4 @@
-package com.kafka.prac;
+package kafka.prac;
 
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -7,9 +7,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
-public class ProducerDemoCallBack {
+public class ProducerDemoKey {
+    static Logger logger= LoggerFactory.getLogger(ProducerDemoKey.class);
+
     public static void main(String[] args) {
-        final Logger logger= LoggerFactory.getLogger(ProducerDemoCallBack.class);
 
         //create producer properties
         String server="0.0.0.0:9092";
@@ -22,7 +23,7 @@ public class ProducerDemoCallBack {
         KafkaProducer<String ,String> producer=new KafkaProducer<String, String>(properties);
         //produce record
 
-        ProducerRecord<String,String> record=new ProducerRecord<String, String>("first_topic","Hello World");
+        ProducerRecord<String,String> record=new ProducerRecord<String, String>("first_topic","key","Hello World");
         //send data
         producer.send(record, new Callback() {
             public void onCompletion(RecordMetadata recordMetadata, Exception e) {

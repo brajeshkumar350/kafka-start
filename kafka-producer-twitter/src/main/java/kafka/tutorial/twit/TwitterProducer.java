@@ -1,4 +1,4 @@
-package com.kafka.tutorial.twit;
+package kafka.tutorial.twit;
 
 import com.google.common.collect.Lists;
 import com.twitter.hbc.ClientBuilder;
@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 public class TwitterProducer {
     Logger logger= LoggerFactory.getLogger(TwitterProducer.class.getName());
-    String consumerKey = "lFWWWIFApLdOj0A2mwd4MITOE";
-    String consumerSecret = "Vwlo46KMacjsYJURW6laAPs5nHTkBJMwUdcsJFmyKcXnIOseZ1";
+    String consumerKey = "MatdjitEttdt5TkFuG2IqieG6";
+    String consumerSecret = "PvWKHF35VvCojq4q8CbdzZ8gtVy39IkfSJIqmTBCVG46nzarAu";
     String secret = "2KRFr5WsPeaVz3SF14lvmXffCgNoPICk1PbFnsLfJhBUQ";
     String token = "3061534490-thO5Phdy7kElSZ4Uimyd0B4kjS5VkoFm6fQuXzK";
 
@@ -80,7 +80,16 @@ public class TwitterProducer {
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,server);
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,StringSerializer.class.getName());
+        //safe producer
+        properties.setProperty(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG,"true");
+        properties.setProperty(ProducerConfig.ACKS_CONFIG,"all");
+        properties.setProperty(ProducerConfig.RETRIES_CONFIG,Integer.toString(Integer.MAX_VALUE));
+        properties.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION,"5");
 
+        //high throughtput producer(to add lag and batch size)
+        properties.setProperty(ProducerConfig.COMPRESSION_TYPE_CONFIG,"snappy");
+        properties.setProperty(ProducerConfig.LINGER_MS_CONFIG,"20");
+        properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG,Integer.toString(32*1024));
         //create producer
         KafkaProducer<String ,String> producer=new KafkaProducer<String, String>(properties);
         return producer;
