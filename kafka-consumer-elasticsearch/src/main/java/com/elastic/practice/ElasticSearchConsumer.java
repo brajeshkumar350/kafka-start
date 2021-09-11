@@ -1,6 +1,8 @@
 package com.elastic.practice;
 
 
+
+import com.google.gson.JsonParser;
 import org.apache.http.HttpHost;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -60,7 +62,11 @@ public class ElasticSearchConsumer {
         {
             ConsumerRecords<String,String> records=consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord<String,String> record:records) {
-                IndexRequest request = new IndexRequest("twitter", "twits")
+                String twitterid=extractIdFromTwitter(record.value());
+                //this will make our rquest as idempotent
+                IndexRequest request = new IndexRequest("twitter",
+                        "twits",
+                        twitterid)
                         .source(record.value(), XContentType.JSON);
                 IndexResponse indexResponse=client.index(request, RequestOptions.DEFAULT);
                 String id=indexResponse.getId();
@@ -74,6 +80,11 @@ public class ElasticSearchConsumer {
         }
 
         //client.close();
+
+    }
+    private static JsonParser jsonParser=new JsonParser();
+    private static String extractIdFromTwitter(String jsonString){
+        return jsonParser.parse(jsonString).getAsJsonObject().get("id_str").getAsString();
 
     }
 }

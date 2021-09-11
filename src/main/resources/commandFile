@@ -28,3 +28,26 @@ kafka-consumer-groups -bootstrap-server 0.0.0.0:9092 --list
 kafka-consumer-groups -bootstrap-server 0.0.0.0:9092 --describe --group my-first-app
 
 kafka-consumer-groups -bootstrap-server 0.0.0.0:9092 --group my-first-app --reset-offsets --to-earliest --execute --topic first_topic
+
+
+Message compression:
+> much smaller producer request size
+>faster ti transfer data over the network
+>better throughput
+
+
+Liner.ms & batch size
+>5 request at same time
+>linger.ms-number of milliseconds  a produceer is willing to wait before send batch out
+>add some lag so the increae throughput
+
+bacthc size:-
+ maximun number of batch size is 16kb
+ increae batch size so like 32kb or 64kb can help increae the compression ,throughput
+ a batch is allocated per partion
+
+
+ //delivery semantic for consumer
+ 1. commit offset at most once(after message recive)
+ 2. commit offset at least once(after message proceed)
+ 3. commit exactly once (with kafka api)
